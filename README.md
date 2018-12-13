@@ -8,26 +8,21 @@ v2ray官方文档给出了几个mac上的第三方客户端，使用过一段时
 
 ### 开机自启
 
-mac上不能像linux那样很方便的以service的形式实现自启动，这里采用了比较简单的方式，通过设置用户登录项来调用启动v2ray的脚本，同时需要修改start.sh的打开方式为终端。目前还有一点不是很完善，就是脚本启动后会留下一个终端的窗口。
+mac上不能像linux那样很方便的以service的形式实现自启动，这里采用了比较简单的方式，利用crontab的@reboot来达到自动启动的效果，虽然apple官方并不建议这样，但是个人感觉配置launchd略显繁琐，所以还是crontab这种比较适合。
+
+打开系统自带终端，这点很关键，使用其他第三方的终端需要在**系统偏好设置->安全性与隐私->隐私->完全磁盘访问权限**赋予权限，系统自带终端无感，执行
 
 ```
-#!/bin/sh
-
-BASE=$(cd "$(dirname "$0")"; pwd)
-cd $BASE
-
-# start a http server
-python -m SimpleHTTPServer 88 > /dev/null 2>&1 &
-
-# set pac
-/usr/sbin/networksetup -setautoproxyurl "Wi-Fi" "http://127.0.0.1:88/auto.pac"
-/usr/sbin/networksetup -setautoproxystate "Wi-Fi" on
-
-# start v2ray
-./v2ray > /dev/null 2>&1 &
+crontab -e
 ```
 
-v2ray会将shell挂起，此处改为输出到null及添加&，保证当前脚本执行完退出。
+增加一行，注意替换为你自己的path
+
+```
+@reboot /==YOUR PATH==/start.sh
+```
+
+保存退出即可，启动后ps下看不到v2ray进程，活动监视器可以看到，stop脚本可以正常关闭代理。
 
 ### 全局代理
 
