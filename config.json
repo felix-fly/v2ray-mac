@@ -48,11 +48,11 @@
         "settings": {
             "rules": [{
                 "type": "field",
-                "domain" : ["site:gw", "ip111cn.appspot.com"],
+                "domain" : ["ext:site.dat:gw", "ip111cn.appspot.com"],
                 "outboundTag": "proxy"
             }, {
                 "type": "field",
-                "domain" : ["site:ad"],
+                "domain" : ["ext:site.dat:ad"],
                 "outboundTag": "blocked"
             }]
         }
